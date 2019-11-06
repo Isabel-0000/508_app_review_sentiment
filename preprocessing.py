@@ -1,6 +1,7 @@
 import sys
 from nltk.corpus import stopwords
 from nltk.tokenize import word_tokenize
+from nltk.probability import FreqDist
 
 def get_lines_from_file(filename):
    line_list = []
@@ -26,9 +27,19 @@ def remove_all_stop(line_list):
       all_non_stop.extend(remove_stop(line, stop_words))
    return all_non_stop
 
+def freq_dist(words):
+   fdist = FreqDist()
+   for word in words:
+      fdist[word] += 1
+
+   fdist.plot(25)
+   return fdist
+
 def main():
    line_list = get_lines_from_file(sys.argv[1])
-   print(remove_all_stop(line_list))
+   no_stops = remove_all_stop(line_list)
+   f = freq_dist(no_stops)
+   prob_dist(f)
 
 if __name__ == "__main__":
    main() 
