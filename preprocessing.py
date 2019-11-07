@@ -32,14 +32,39 @@ def freq_dist(words):
    for word in words:
       fdist[word] += 1
 
-   fdist.plot(25)
+   #fdist.plot(25)
    return fdist
 
+def prob_word(word, fdist, num_words):
+   return fdist[word] / num_words
+
+def decide_sentiment(sentence, pos_model, neg_model, num_pos, num_neg):
+   no_stop_review = remove_stop(sentence, set(stopwords.words('english')))
+   total_neg = 0
+   total_pos = 0
+   for word in no_stop_review:
+      total_neg += prob_word(word, neg_model, num_neg)
+      total_pos += prob_word(word, pos_model, num_pos)
+
+   print('Total positive probabilities: ', total_pos)
+   print('Total negative probabilities: ', total_neg)
+   if total_pos > total_neg:
+      print('Result: Positive sentiment')
+   else:
+      print('Result: Negative sentiment')
+
 def main():
-   line_list = get_lines_from_file(sys.argv[1])
-   no_stops = remove_all_stop(line_list)
-   f = freq_dist(no_stops)
-   prob_dist(f)
+   line_list_p = get_lines_from_file('positive10k.txt')
+   no_stops_p = remove_all_stop(line_list_p)
+   f_p = freq_dist(no_stops_p)
+
+   line_list_n = get_lines_from_file('negative10k.txt')
+   no_stops_n = remove_all_stop(line_list_n)
+   f_n = freq_dist(no_stops_n)
+   
+   lines = get_lines_from_file(sys.argv[1])
+   for line in lines:
+      decide_sentiment(line, f_p, f_n, len(no_stops_p), len(no_stops_n))
 
 if __name__ == "__main__":
    main() 
