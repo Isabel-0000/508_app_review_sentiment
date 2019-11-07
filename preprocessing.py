@@ -50,8 +50,10 @@ def decide_sentiment(sentence, pos_model, neg_model, num_pos, num_neg):
    print('Total negative probabilities: ', total_neg)
    if total_pos > total_neg:
       print('Result: Positive sentiment')
+      return 1
    else:
       print('Result: Negative sentiment')
+      return -1
 
 def main():
    line_list_p = get_lines_from_file('positive10k.txt')
@@ -62,9 +64,15 @@ def main():
    no_stops_n = remove_all_stop(line_list_n)
    f_n = freq_dist(no_stops_n)
    
-   lines = get_lines_from_file(sys.argv[1])
+   lines = get_lines_from_file('negative10k.txt')
+   correct = 0
+   total = 0
    for line in lines:
-      decide_sentiment(line, f_p, f_n, len(no_stops_p), len(no_stops_n))
+      if decide_sentiment(line, f_p, f_n, len(no_stops_p), len(no_stops_n)) == 1:
+         correct += 1
+      total += 1
+   percent = correct / total
+   print("Positive: ", percent)
 
 if __name__ == "__main__":
    main() 
