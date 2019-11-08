@@ -3,6 +3,7 @@ from nltk.corpus import stopwords
 from nltk.tokenize import word_tokenize
 from nltk.probability import FreqDist
 from freq_dist import *
+from unique import make_unique
 
 def get_lines_from_file(filename):
    line_list = []
@@ -31,13 +32,17 @@ def remove_all_stop(line_list):
 def main():
    line_list_p = get_lines_from_file('positive10k.txt')
    no_stops_p = remove_all_stop(line_list_p)
-   f_p = freq_dist(no_stops_p)
 
    line_list_n = get_lines_from_file('negative10k.txt')
    no_stops_n = remove_all_stop(line_list_n)
+   
+   print('going to make unique')
+   make_unique(no_stops_p, no_stops_n)
+   
+   f_p = freq_dist(no_stops_p)
    f_n = freq_dist(no_stops_n)
    
-   lines = get_lines_from_file('negative10k.txt')
+   lines = get_lines_from_file('positive10k.txt')
    correct = 0
    total = 0
    for line in lines:
