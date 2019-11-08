@@ -2,6 +2,7 @@ import sys
 from nltk.corpus import stopwords
 from nltk.tokenize import word_tokenize
 from nltk.probability import FreqDist
+from freq_dist import *
 
 def get_lines_from_file(filename):
    line_list = []
@@ -26,34 +27,6 @@ def remove_all_stop(line_list):
    for line in line_list:
       all_non_stop.extend(remove_stop(line, stop_words))
    return all_non_stop
-
-def freq_dist(words):
-   fdist = FreqDist()
-   for word in words:
-      fdist[word] += 1
-
-   #fdist.plot(25)
-   return fdist
-
-def prob_word(word, fdist, num_words):
-   return fdist[word] / num_words
-
-def decide_sentiment(sentence, pos_model, neg_model, num_pos, num_neg):
-   no_stop_review = remove_stop(sentence, set(stopwords.words('english')))
-   total_neg = 0
-   total_pos = 0
-   for word in no_stop_review:
-      total_neg += prob_word(word, neg_model, num_neg)
-      total_pos += prob_word(word, pos_model, num_pos)
-
-   print('Total positive probabilities: ', total_pos)
-   print('Total negative probabilities: ', total_neg)
-   if total_pos > total_neg:
-      print('Result: Positive sentiment')
-      return 1
-   else:
-      print('Result: Negative sentiment')
-      return -1
 
 def main():
    line_list_p = get_lines_from_file('positive10k.txt')
